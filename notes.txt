@@ -1,0 +1,2 @@
+--To Deploy--
+./loom deploy -a ./public_key -k ./private_key -b ./build/contracts/SimpleStore.bin -w http://localhost:46657 -r http://localhost:9999
