@@ -11,8 +11,8 @@ contract RealmBase {
     
     // Structs
     struct Tile {
-        int x;
-        int y;
+        int32 x;
+        int32 y;
     }
 
     // -- Storage --
@@ -39,14 +39,14 @@ contract RealmBase {
         createTile(-1, 1);
     }
 
-    function createTile(int _x, int _y) internal {
+    function createTile(int32 _x, int32 _y) internal {
         // TODO - make sure position isn't already occupied
         //   and that it is valid (next to another tile)
         uint id = tiles.push(Tile(_x, _y)) - 1;
         positionToTileId[_x][_y] = id;
     }
 
-    function tileExists(int _x, int _y) internal view returns(bool) {
+    function tileExists(int32 _x, int32 _y) internal view returns(bool) {
         if ( (_x != 0 || _y != 0) && (positionToTileId[_x][_y] == 0)) {
             return false;
         }
@@ -98,7 +98,7 @@ contract RealmBase {
       * @return x The x position of this tile.
       * @return y The y position of this tile.
       */
-    function GetTile(uint _id) public view returns(address, int, int) {
+    function GetTile(uint _id) public view returns(address, int32, int32) {
         return (tileIdToOwner[_id], tiles[_id].x, tiles[_id].y);
     }
  
