@@ -4,7 +4,9 @@
   "scripts": {
     "truffle": "truffle",
     "deploy:reset": "truffle deploy --reset --network loom_dapp_chain",
+    "deploy-windows:reset": "truffle.cmd deploy --reset --network loom_dapp_chain",
     "deploy": "truffle deploy --network loom_dapp_chain",
+    "deploy-windows": "truffle.cmd deploy --network loom_dapp_chain",
     "test": "truffle test --network loom_dapp_chain"
   },
   "dependencies": {
