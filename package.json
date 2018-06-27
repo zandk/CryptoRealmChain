@@ -10,8 +10,8 @@
     "test": "truffle test --network loom_dapp_chain"
   },
   "dependencies": {
-    "loom-truffle-provider": "^0.2.0",
+    "loom-truffle-provider": "^0.3.0",
     "openzeppelin-solidity": "^1.10.0",
-    "truffle": "^4.1.8"
+    "truffle": "^4.1.12"
   }
 }

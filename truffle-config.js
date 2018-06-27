@@ -14,6 +14,10 @@ module.exports = {
     loom_dapp_chain: {
       provider: loomTruffleProvider,
       network_id: '*'
+    },
+    ganache: {
+      provider: "http://127.0.0.1:8545",
+      network_id: '*'
     }
   }
 }

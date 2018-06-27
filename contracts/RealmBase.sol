@@ -7,7 +7,8 @@ contract RealmBase {
     // Imports
     using SafeMath for uint256;
     // Events
-    event UpdatedTile(uint tileId);
+    event OnUpdateTileOwner(uint tileId, address newOwner);
+    event OnNewTile(uint tileId);
     
     // Structs
     struct Tile {
@@ -18,19 +19,17 @@ contract RealmBase {
     // -- Storage --
     // World
     Tile[] tiles;
-    mapping(int => mapping(int => uint)) positionToTileId;
-    mapping (uint => address) tileIdToOwner;
 
     // Maps
-    // mapping (uint256 => address) public guyIndexToOwner;
-    // mapping (address => uint256) ownershipCount;
+    mapping(int32 => mapping(int32 => uint)) positionToTileId;
+    mapping (uint => address) tileIdToOwner;
 
-    function RealmBase() public {
+    constructor() public {
         // Create base tiles
 
         // Genesis tile! id = 0
         createTile(0, 0);
-
+        // other default tiles
         createTile(0, -1);
         createTile(0, 1);
         createTile(-1, 0);
@@ -39,11 +38,13 @@ contract RealmBase {
         createTile(-1, 1);
     }
 
-    function createTile(int32 _x, int32 _y) internal {
+    function createTile(int32 _x, int32 _y) internal returns(uint id) {
         // TODO - make sure position isn't already occupied
         //   and that it is valid (next to another tile)
-        uint id = tiles.push(Tile(_x, _y)) - 1;
-        positionToTileId[_x][_y] = id;
+        uint newId = tiles.push(Tile(_x, _y)) - 1;
+        positionToTileId[_x][_y] = newId;
+        emit OnNewTile(newId);
+        return newId;
     }
 
     function tileExists(int32 _x, int32 _y) internal view returns(bool) {
@@ -60,7 +61,7 @@ contract RealmBase {
         require(tileIdToOwner[_id] == address(0));
 
         // If we are claiming a tile for the first time
-        Tile t = tiles[_id];
+        Tile memory t = tiles[_id];
         if (!tileExists(t.x+1, t.y)) {
             createTile(t.x+1, t.y);
         }
@@ -81,7 +82,7 @@ contract RealmBase {
         }
 
         tileIdToOwner[_id] = msg.sender;
-        emit UpdatedTile(_id);
+        emit OnUpdateTileOwner(_id, msg.sender);
         // emit NewGuy(id, _name, _dna);
     }
 
@@ -98,8 +99,12 @@ contract RealmBase {
       * @return x The x position of this tile.
       * @return y The y position of this tile.
       */
-    function GetTile(uint _id) public view returns(address, int32, int32) {
+    function GetTile(uint _id) public view returns(address owner, int32 x, int32 y) {
         return (tileIdToOwner[_id], tiles[_id].x, tiles[_id].y);
+    }
+
+    function TestValue(uint _id) public view returns(uint output) {
+        return _id;
     }
  
 }
