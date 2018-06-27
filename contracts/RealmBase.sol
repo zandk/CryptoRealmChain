@@ -60,7 +60,14 @@ contract RealmBase {
     function ClaimTile(uint _id) public returns(bool) {
         require(tileIdToOwner[_id] == address(0));
 
-        // If we are claiming a tile for the first time
+        tileIdToOwner[_id] = msg.sender;
+        emit OnUpdateTileOwner(_id, msg.sender);
+    }
+
+    /** @dev Generates tiles on empty slots around another tile
+      */
+    function SpreadTile(uint _id) public {
+        // Look at all the tiles around this tile and generate the ones that don't exist
         Tile memory t = tiles[_id];
         if (!tileExists(t.x+1, t.y)) {
             createTile(t.x+1, t.y);
@@ -80,10 +87,6 @@ contract RealmBase {
         if (!tileExists(t.x-1, t.y+1)) {
             createTile(t.x-1, t.y+1);
         }
-
-        tileIdToOwner[_id] = msg.sender;
-        emit OnUpdateTileOwner(_id, msg.sender);
-        // emit NewGuy(id, _name, _dna);
     }
 
     /** @dev Returns the amount of tiles in the world
