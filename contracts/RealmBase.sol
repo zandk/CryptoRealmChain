@@ -12,8 +12,11 @@ contract RealmBase {
     
     // Structs
     struct Tile {
-        int32 x;
-        int32 y;
+        int16 x;
+        int16 y;
+        uint8 resource;
+        uint8 resourceQuantity;
+        uint8 improvement;
     }
 
     // -- Storage --
@@ -21,40 +24,35 @@ contract RealmBase {
     Tile[] tiles;
 
     // Maps
-    mapping(int32 => mapping(int32 => uint)) positionToTileId;
+    mapping(int16 => mapping(int16 => uint)) positionToTileId;
     mapping (uint => address) tileIdToOwner;
 
     constructor() public {
         // Create base tiles
-
-        // Genesis tile! id = 0
-        createTile(0, 0);
-        // other default tiles
-        createTile(0, -1);
-        createTile(0, 1);
-        createTile(-1, 0);
-        createTile(1, 0);
-        createTile(1, -1);
-        createTile(-1, 1);
+        for (int16 x = -5; x < 5; x++) {
+            for (int16 y = -5; y < 5; y++) {
+                createTile(x, y);
+            }
+        }
     }
 
-    function createTile(int32 _x, int32 _y) internal returns(uint id) {
+    function createTile(int16 _x, int16 _y) internal returns(uint id) {
         // TODO - make sure position isn't already occupied
         //   and that it is valid (next to another tile)
-        uint newId = tiles.push(Tile(_x, _y)) - 1;
+        uint newId = tiles.push(Tile(_x, _y, 1, 1, 0)) - 1;
         positionToTileId[_x][_y] = newId;
         emit OnNewTile(newId);
         return newId;
     }
 
-    function tileExists(int32 _x, int32 _y) internal view returns(bool) {
+    function tileExists(int16 _x, int16 _y) internal view returns(bool) {
         if ( (_x != 0 || _y != 0) && (positionToTileId[_x][_y] == 0)) {
             return false;
         }
         return true;
     }
     
-    /** @dev function for creating a new "guy"
+    /** @dev function for claiming unowned tiles
       * @return worked Whether or not claim went through
       */
     function ClaimTile(uint _id) public returns(bool) {
@@ -102,8 +100,8 @@ contract RealmBase {
       * @return x The x position of this tile.
       * @return y The y position of this tile.
       */
-    function GetTile(uint _id) public view returns(address owner, int32 x, int32 y) {
-        return (tileIdToOwner[_id], tiles[_id].x, tiles[_id].y);
+    function GetTile(uint _id) public view returns(address owner, int16 x, int16 y, uint8 resource, uint8 resourceQuantity, uint8 improvement) {
+        return (tileIdToOwner[_id], tiles[_id].x, tiles[_id].y, tiles[_id].resource, tiles[_id].resourceQuantity, tiles[_id].improvement);
     }
 
     function TestValue(uint _id) public view returns(uint output) {
