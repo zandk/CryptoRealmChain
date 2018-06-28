@@ -8,6 +8,7 @@ contract RealmBase {
     using SafeMath for uint256;
     // Events
     event OnUpdateTileOwner(uint tileId, address newOwner);
+    event OnUpdateTileImprovement(uint tileId, uint8 improvementId);
     event OnNewTile(uint tileId);
     
     // Structs
@@ -60,6 +61,16 @@ contract RealmBase {
 
         tileIdToOwner[_id] = msg.sender;
         emit OnUpdateTileOwner(_id, msg.sender);
+    }
+
+    /** @dev function for claiming unowned tiles
+      * @return worked Whether or not claim went through
+      */
+    function ImproveTile(uint _tileId, uint8 _improvementId) public returns(bool) {
+        require(tileIdToOwner[_tileId] == msg.sender);
+
+        tiles[_tileId].improvement = _improvementId;
+        emit OnUpdateTileImprovement(_tileId, _improvementId);
     }
 
     /** @dev Returns the amount of tiles in the world
