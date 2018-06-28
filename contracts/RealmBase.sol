@@ -62,31 +62,6 @@ contract RealmBase {
         emit OnUpdateTileOwner(_id, msg.sender);
     }
 
-    /** @dev Generates tiles on empty slots around another tile
-      */
-    function SpreadTile(uint _id) public {
-        // Look at all the tiles around this tile and generate the ones that don't exist
-        Tile memory t = tiles[_id];
-        if (!tileExists(t.x+1, t.y)) {
-            createTile(t.x+1, t.y);
-        }
-        if (!tileExists(t.x, t.y+1)) {
-            createTile(t.x, t.y+1);
-        }
-        if (!tileExists(t.x-1, t.y)) {
-            createTile(t.x-1, t.y);
-        }
-        if (!tileExists(t.x, t.y-1)) {
-            createTile(t.x, t.y-1);
-        }
-        if (!tileExists(t.x+1, t.y-1)) {
-            createTile(t.x+1, t.y-1);
-        }
-        if (!tileExists(t.x-1, t.y+1)) {
-            createTile(t.x-1, t.y+1);
-        }
-    }
-
     /** @dev Returns the amount of tiles in the world
       * @return length The length of tiles in the world.
       */
